@@ -1,6 +1,7 @@
 ﻿#include <windows.h>
 #include <objidl.h>
 #include <gdiplus.h>
+#include<string.h>
 using namespace Gdiplus;
 #pragma comment (lib,"Gdiplus.lib")
 
@@ -16,40 +17,99 @@ using namespace Gdiplus;
 #define ID_PRZYCISK4_1 510
 #define ID_PRZYCISK4_2 511
 #define ID_PRZYCISK4_3 512
+#define TMR_1 1
 
+char kierunek;
+int value=0;
+RECT drawArea = {230,20,370,700};
 
-VOID OnPaint(HDC hdc)
+VOID OnPaint(HDC hdc,bool direction,int y)
 {
+	
+	HPEN	pen = CreatePen(PS_SOLID, 10, 0X000000);
+	HPEN	penW = CreatePen(PS_SOLID, 10, 0xFFFFFF);
+	
+
+	if (direction == 1) {
+
+		SelectObject(hdc, pen);
+		Rectangle(
+			hdc,
+			230,
+			y-160 - value,
+			360,
+			y - value
+		);
+		Sleep(100);
+		SelectObject(hdc, penW);
+		Rectangle(
+			hdc,
+			230,
+			y-160 - value,
+			360,
+			y - value
+		);
+
+		
+	}
+	else {
+		SelectObject(hdc, pen);
+		Rectangle(
+			hdc,
+			230,
+			y -160+ value,
+			360,
+			y + value
+		);
+		Sleep(100);
+		SelectObject(hdc, penW);
+		Rectangle(
+			hdc,
+			230,
+			y-160 + value,
+			360,
+			y + value
+		);
+		
+	}
+	value++;
+}
+void Background(HDC hdc) {
 	Graphics graphics(hdc);
 	Pen      pen(Color(255, 0, 0, 0), 10);
 	graphics.DrawLine(&pen, 0, 180, 200, 180);
 	graphics.DrawLine(&pen, 0, 330, 200, 330);
 	graphics.DrawLine(&pen, 0, 480, 200, 480);
-	graphics.DrawLine(&pen, 0, 630, 200, 630 );
+	graphics.DrawLine(&pen, 0, 630, 200, 630);//1-2 =>150 1-3 => 300 1-4=>450 
 	graphics.DrawRectangle(&pen, 210, 10, 170, 700);
-	//graphics.DrawRectangle(&pen, 230, 30, 130, 150);
-	
-
+	graphics.DrawRectangle(&pen, 230, 470, 129, 159);
 }
 
+	int t;
+	int b;
+	int pietro;
+	bool direction=0;
+
+	HPEN	pen = CreatePen(PS_SOLID, 10, 0X000000);
+	HPEN	penW=CreatePen(PS_SOLID,10,0xFFFFFF);
 
 
-void movement( HDC &hdc,int current_top, int current_bottom, int target_top, int target_bottom ) {// nie działa, możesz coś ogarnąć z animacją ruchu windy? Może trzeba użyć timera ? 
+void repaintWindow(HWND hWnd, HDC& hdc, PAINTSTRUCT& ps,RECT *drawArea)
+{
+	
+	
+	
+	
 
-	while (current_bottom = !target_bottom) {
-		Rectangle(
-			hdc,
-			230,
-			current_top++,
-			360,
-			current_bottom++
-		);
-	}
+	hdc = GetDC(hWnd);
+	
+	OnPaint(hdc,direction,t);
+	ReleaseDC(hWnd, hdc);
 	
 }
-
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
+
 
 INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
 {
@@ -291,189 +351,171 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 {
 	HDC          hdc;
 	PAINTSTRUCT  ps;
-	HPEN      pen=CreatePen(PS_SOLID, 10,0X000000);
+	
 
 	switch (message)
 	{
 	case WM_COMMAND:
 	switch(wParam){
 	case ID_PRZYCISK1_2: {
+	
 		
-		hdc = GetDC(hWnd);
-		SelectObject(hdc, pen);
-		int x = 630;
-		int y = 480;
-		/* Rectangle(
-			hdc,
-			230,
-			450,
-			360,
-			630
-		);*/
-		 movement(hdc,480,630, x, y);
-		ReleaseDC(hWnd, hdc);
+		SetTimer(hWnd, TMR_1, 25, NULL);
+		
+		t = 630;
+		pietro= 150;
+		direction = 1;
+		
 		}
 		
 	
 	break;
 	case ID_PRZYCISK1_3: {
 
-		hdc = GetDC(hWnd);
-		SelectObject(hdc, pen);
-		Rectangle(
-			hdc,
-			230,
-			450,
-			360,
-			630
-		);
 
-		ReleaseDC(hWnd, hdc);
+		SetTimer(hWnd, TMR_1, 25, NULL);
+
+		t = 630;
+		pietro = 300;
+		direction = 1;
+
 	}
+
+
+					   break;
 	case ID_PRZYCISK1_4: {
 
-		hdc = GetDC(hWnd);
-		SelectObject(hdc, pen);
-		Rectangle(
-			hdc,
-			230,
-			450,
-			360,
-			630
-		);
 
-		ReleaseDC(hWnd, hdc);
+		SetTimer(hWnd, TMR_1, 25, NULL);
+
+		t = 630;
+		pietro = 430;
+		direction = 1;
+
 	}
+
+
+					   break;
 	case ID_PRZYCISK2_1: {
+		SetTimer(hWnd, TMR_1, 25, NULL);
 
-		hdc = GetDC(hWnd);
-		SelectObject(hdc, pen);
-		Rectangle(
-			hdc,
-			230,
-			450,
-			360,
-			630
-		);
+		t = 480;
+		pietro = 150;
+		direction = 0;
 
-		ReleaseDC(hWnd, hdc);
 	}
+
+
+					   break;
 	case ID_PRZYCISK2_3: {
+		SetTimer(hWnd, TMR_1, 25, NULL);
 
-		hdc = GetDC(hWnd);
-		SelectObject(hdc, pen);
-		Rectangle(
-			hdc,
-			230,
-			450,
-			360,
-			630
-		);
+		t = 480;
+		pietro = 150;
+		direction = 1;
 
-		ReleaseDC(hWnd, hdc);
 	}
+
+
+					   break;
 	case ID_PRZYCISK2_4: {
+		SetTimer(hWnd, TMR_1, 25, NULL);
 
-		hdc = GetDC(hWnd);
-		SelectObject(hdc, pen);
-		Rectangle(
-			hdc,
-			230,
-			450,
-			360,
-			630
-		);
+		t = 480;
+		pietro = 300;
+		direction = 1;
 
-		ReleaseDC(hWnd, hdc);
 	}
+
+
+					   break;
 	case ID_PRZYCISK3_1: {
+		SetTimer(hWnd, TMR_1, 25, NULL);
 
-		hdc = GetDC(hWnd);
-		SelectObject(hdc, pen);
-		Rectangle(
-			hdc,
-			230,
-			450,
-			360,
-			630
-		);
+		t = 330;
+		pietro = 300;
+		direction = 0;
 
-		ReleaseDC(hWnd, hdc);
 	}
+
+
+					   break;
 	case ID_PRZYCISK3_2: {
+		SetTimer(hWnd, TMR_1, 25, NULL);
 
-		hdc = GetDC(hWnd);
-		SelectObject(hdc, pen);
-		Rectangle(
-			hdc,
-			230,
-			450,
-			360,
-			630
-		);
+		t = 330;
+		pietro = 150;
+		direction = 0;
 
-		ReleaseDC(hWnd, hdc);
 	}
+
+
+					   break;
 	case ID_PRZYCISK3_4: {
+		SetTimer(hWnd, TMR_1, 25, NULL);
 
-		hdc = GetDC(hWnd);
-		SelectObject(hdc, pen);
-		Rectangle(
-			hdc,
-			230,
-			450,
-			360,
-			630
-		);
+		t = 330;
+		pietro = 150;
+		direction = 1;
 
-		ReleaseDC(hWnd, hdc);
 	}
+
+
+					   break;
 	case ID_PRZYCISK4_1: {
+		SetTimer(hWnd, TMR_1, 25, NULL);
 
-		hdc = GetDC(hWnd);
-		SelectObject(hdc, pen);
-		Rectangle(
-			hdc,
-			230,
-			450,
-			360,
-			630
-		);
+		t = 180;
+		pietro = 450;
+		direction = 0;
 
-		ReleaseDC(hWnd, hdc);
 	}
+
+
+					   break;
 	case ID_PRZYCISK4_2: {
+		SetTimer(hWnd, TMR_1, 25, NULL);
 
-		hdc = GetDC(hWnd);
-		SelectObject(hdc, pen);
-		Rectangle(
-			hdc,
-			230,
-			450,
-			360,
-			630
-		);
+		t = 180;
+		pietro = 300;
+		direction = 0;
 
-		ReleaseDC(hWnd, hdc);
 	}
+
+
+					   break;
 	case ID_PRZYCISK4_3: {
+		SetTimer(hWnd, TMR_1, 25, NULL);
 
-		hdc = GetDC(hWnd);
-		SelectObject(hdc, pen);
-		Rectangle(
-			hdc,
-			230,
-			450,
-			360,
-			630
-		);
+		t = 180;
+		pietro = 150;
+		direction = 0;
 
-		ReleaseDC(hWnd, hdc);
 	}
+
+
+					   break;
 	}
+	case WM_TIMER:
+		switch (wParam)
+		{
+		case TMR_1:
+			
+			if (value == pietro) {
+				value = 0;
+				KillTimer(hWnd, TMR_1);
+
+				break;
+			}
+			
+			repaintWindow(hWnd, hdc, ps, &drawArea);
+			value++;
+			break;
+		}
+
 	case WM_PAINT:
 		hdc = BeginPaint(hWnd, &ps);
-		OnPaint(hdc);
+		Background(hdc);
 		EndPaint(hWnd, &ps);
 		return 0;
 	case WM_DESTROY:
