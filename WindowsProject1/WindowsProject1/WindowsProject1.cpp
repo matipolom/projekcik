@@ -1,7 +1,7 @@
 ﻿#include <windows.h>
 #include <objidl.h>
 #include <gdiplus.h>
-#include<vector>
+#include<cstdlib>
 using namespace Gdiplus;
 #pragma comment (lib,"Gdiplus.lib")
 
@@ -19,6 +19,13 @@ using namespace Gdiplus;
 #define ID_PRZYCISK4_3 512
 #define TMR_1 1
 
+char zero[4] = "0";
+LPWSTR Bufor1; // Nie jestem w stanie ogarnąć wyświetlania wartości podanej na pole tekstowe, pomożesz? obok kody odpowiedzianego za wyswitlanie masy dodałem komentarze
+LPWSTR Bufor2; //
+LPWSTR Bufor3; //
+LPWSTR Bufor4; //
+LPWSTR text=(LPWSTR)zero;//
+//mbsrtowcs(wtext, text, 4);
 bool isTimerrunning=0;
 char kierunek;
 int value=0;
@@ -82,7 +89,7 @@ void Background(HDC hdc) {
 	graphics.DrawLine(&pen, 0, 180, 200, 180);
 	graphics.DrawLine(&pen, 0, 330, 200, 330);
 	graphics.DrawLine(&pen, 0, 480, 200, 480);
-	graphics.DrawLine(&pen, 0, 630, 200, 630);//1-2 =>150 1-3 => 300 1-4=>450 
+	graphics.DrawLine(&pen, 0, 630, 200, 630);
 	graphics.DrawRectangle(&pen, 210, 10, 170, 700);
 	graphics.DrawRectangle(&pen, 230, 470, 129, 159);
 }
@@ -91,7 +98,7 @@ void Background(HDC hdc) {
 	int pietro;
 	bool direction=0;
 	int yl;
-	int yr;
+	int yr=630;
 
 	
 void repaintWindow(HWND hWnd, HDC& hdc, PAINTSTRUCT& ps,RECT *drawArea)
@@ -152,9 +159,42 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
 		hInstance,                // program instance handle
 		NULL);                    // creation parameters
 
+	HWND hwndTextButton1 = CreateWindowEx(WS_EX_CLIENTEDGE, TEXT("Edit"), TEXT("0"),
+		WS_CHILD | WS_VISIBLE, 75, 500, 40,
+		20, hWnd, NULL, NULL, NULL);//
+
+	HWND hwndTextButton2 = CreateWindowEx(WS_EX_CLIENTEDGE, TEXT("Edit"), TEXT("0"),
+		WS_CHILD | WS_VISIBLE, 75, 350, 40,
+		20, hWnd, NULL, NULL, NULL);//
+
+	HWND hwndTextButton3 = CreateWindowEx(WS_EX_CLIENTEDGE, TEXT("Edit"), TEXT("0"),
+		WS_CHILD | WS_VISIBLE, 75, 200, 40,
+		20, hWnd, NULL, NULL, NULL);//
+
+	HWND hwndTextButton4 = CreateWindowEx(WS_EX_CLIENTEDGE, TEXT("Edit"), TEXT("0"),
+		WS_CHILD | WS_VISIBLE, 75, 50, 40,
+		20, hWnd, NULL, NULL, NULL);//
+
+
 	HWND hStaticIcon = CreateWindowEx(0, L"STATIC", NULL, WS_CHILD | WS_VISIBLE |
-		SS_CENTER, 500, 50, 48, 48, hWnd, NULL, hInstance, NULL);
-	SetWindowText(hStaticIcon, L"0");
+		SS_CENTER, 500, 50, 48, 48, hWnd, NULL, hInstance, NULL);//
+	SetWindowText(hStaticIcon, text);//
+
+	DWORD Length1 = GetWindowTextLength(hwndTextButton1);//
+	LPWSTR Bufor1 = (LPWSTR)GlobalAlloc(GPTR, Length1+ 1);//
+	GetWindowText(hwndTextButton1, Bufor1, Length1+ 1);//
+
+	DWORD Length2 = GetWindowTextLength(hwndTextButton2);//
+	LPWSTR Bufor2 = (LPWSTR)GlobalAlloc(GPTR, Length2+ 1);//
+	GetWindowText(hwndTextButton2, Bufor2, Length2+ 1);//
+
+	DWORD Length3 = GetWindowTextLength(hwndTextButton3);//
+	LPWSTR Bufor3 = (LPWSTR)GlobalAlloc(GPTR, Length3 + 1);//
+	GetWindowText(hwndTextButton3, Bufor3, Length3 + 1);//
+
+	DWORD Length4 = GetWindowTextLength(hwndTextButton4);//
+	LPWSTR Bufor4 = (LPWSTR)GlobalAlloc(GPTR, Length4+ 1);//
+	GetWindowText(hwndTextButton4, Bufor4, Length4 + 1);//
 		
 	HWND hwndButton1_2 = CreateWindow(
 		L"BUTTON",  // Predefined class; Unicode assumed 
@@ -195,9 +235,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
 		(HINSTANCE)GetWindowLongPtr(hWnd, GWLP_HINSTANCE),
 		NULL);      // Pointer not needed.
 
-	HWND hwndTextButton1 = CreateWindowEx(WS_EX_CLIENTEDGE, TEXT("Edit"), TEXT("0"),
-		WS_CHILD | WS_VISIBLE, 75	, 500, 40,
-		20, hWnd, NULL, NULL, NULL);
+	
 
 	HWND hwndButton2_1 = CreateWindow(
 		L"BUTTON",  // Predefined class; Unicode assumed 
@@ -238,10 +276,6 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
 		(HINSTANCE)GetWindowLongPtr(hWnd, GWLP_HINSTANCE),
 		NULL);      // Pointer not needed.
 
-	HWND hwndTextButton2 = CreateWindowEx(WS_EX_CLIENTEDGE, TEXT("Edit"), TEXT("0"),
-		WS_CHILD | WS_VISIBLE, 75, 350, 40,
-		20, hWnd, NULL, NULL, NULL);
-
 	HWND hwndButton3_1 = CreateWindow(
 		L"BUTTON",  // Predefined class; Unicode assumed 
 		L"1",      // Button text 
@@ -280,10 +314,6 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
 		(HMENU)ID_PRZYCISK3_4,       // No menu.
 		(HINSTANCE)GetWindowLongPtr(hWnd, GWLP_HINSTANCE),
 		NULL);      // Pointer not needed.
-
-	HWND hwndTextButton3 = CreateWindowEx(WS_EX_CLIENTEDGE, TEXT("Edit"), TEXT("0"),
-		WS_CHILD | WS_VISIBLE, 75, 200, 40,
-		20, hWnd, NULL, NULL, NULL);
 
 	HWND hwndButton4_1 = CreateWindow(
 		L"BUTTON",  // Predefined class; Unicode assumed 
@@ -324,10 +354,6 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
 		(HINSTANCE)GetWindowLongPtr(hWnd, GWLP_HINSTANCE),
 		NULL);      // Pointer not needed.
 
-	HWND hwndTextButton4 = CreateWindowEx(WS_EX_CLIENTEDGE, TEXT("Edit"), TEXT("0"),
-		WS_CHILD | WS_VISIBLE, 75, 50, 40,
-		20, hWnd, NULL, NULL, NULL);
-
 	ShowWindow(hWnd, iCmdShow);
 	UpdateWindow(hWnd);
 
@@ -353,20 +379,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 	case WM_COMMAND:
 	switch(wParam){
 	case ID_PRZYCISK1_2: {
-		if (isTimerrunning)
+		if (isTimerrunning || yr!=630  )
 			break;
 		isTimerrunning=SetTimer(hWnd, TMR_1, 25, NULL);
 		
 		t = 630;
 		pietro= 150;
 		direction = 1;
-		
+	
 		}
 		
 	
 	break;
 	case ID_PRZYCISK1_3: {
-		if (isTimerrunning)
+		if (isTimerrunning || yr != 630)
 			break;
 
 		isTimerrunning=SetTimer(hWnd, TMR_1, 25, NULL);
@@ -380,7 +406,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 
 					   break;
 	case ID_PRZYCISK1_4: {
-		if (isTimerrunning)
+		if (isTimerrunning || yr != 630)
 			break;
 
 		isTimerrunning=SetTimer(hWnd, TMR_1, 25, NULL);
@@ -394,7 +420,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 
 					   break;
 	case ID_PRZYCISK2_1: {
-		if (isTimerrunning)
+		if (isTimerrunning || yr != 480)
 			break;
 		isTimerrunning=SetTimer(hWnd, TMR_1, 25, NULL);
 
@@ -407,7 +433,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 
 					   break;
 	case ID_PRZYCISK2_3: {
-		if (isTimerrunning)
+		if (isTimerrunning || yr != 480)
 			break;
 		isTimerrunning=SetTimer(hWnd, TMR_1, 25, NULL);
 
@@ -420,7 +446,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 
 					   break;
 	case ID_PRZYCISK2_4: {
-		if (isTimerrunning)
+		if (isTimerrunning || yr != 480)
 			break;
 		isTimerrunning=SetTimer(hWnd, TMR_1, 25, NULL);
 
@@ -433,7 +459,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 
 					   break;
 	case ID_PRZYCISK3_1: {
-		if (isTimerrunning)
+		if (isTimerrunning || yr != 330)
 			break;
 		isTimerrunning=SetTimer(hWnd, TMR_1, 25, NULL);
 
@@ -446,7 +472,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 
 					   break;
 	case ID_PRZYCISK3_2: {
-		if (isTimerrunning)
+		if (isTimerrunning || yr != 330)
 			break;
 		isTimerrunning=SetTimer(hWnd, TMR_1, 25, NULL);
 
@@ -459,7 +485,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 
 					   break;
 	case ID_PRZYCISK3_4: {
-		if (isTimerrunning)
+		if (isTimerrunning || yr != 330)
 			break;
 		isTimerrunning=SetTimer(hWnd, TMR_1, 25, NULL);
 
@@ -472,7 +498,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 
 					   break;
 	case ID_PRZYCISK4_1: {
-		if (isTimerrunning)
+		if (isTimerrunning || yr != 180)
 			break;
 		isTimerrunning=SetTimer(hWnd, TMR_1, 25, NULL);
 
@@ -485,7 +511,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 
 					   break;
 	case ID_PRZYCISK4_2: {
-		if (isTimerrunning)
+		if (isTimerrunning || yr != 180)
 			break;
 		isTimerrunning=SetTimer(hWnd, TMR_1, 25, NULL);
 
@@ -498,7 +524,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 
 					   break;
 	case ID_PRZYCISK4_3: {
-		if (isTimerrunning)
+		if (isTimerrunning || yr != 180)
 			break;
 		isTimerrunning=SetTimer(hWnd, TMR_1, 25, NULL);
 
