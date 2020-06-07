@@ -1,7 +1,7 @@
 ﻿#include <windows.h>
 #include <objidl.h>
 #include <gdiplus.h>
-#include<string.h>
+#include<vector>
 using namespace Gdiplus;
 #pragma comment (lib,"Gdiplus.lib")
 
@@ -19,26 +19,28 @@ using namespace Gdiplus;
 #define ID_PRZYCISK4_3 512
 #define TMR_1 1
 
+bool isTimerrunning=0;
 char kierunek;
 int value=0;
 RECT drawArea = {230,20,370,700};
+HPEN	pen = CreatePen(PS_SOLID, 10, 0X000000);
+HPEN	penW = CreatePen(PS_SOLID, 10, 0xFFFFFF);
 
-VOID OnPaint(HDC hdc,bool direction,int y)
+
+ 
+
+
+VOID OnPaint(HDC hdc,bool direction,int y,int &yl,int &yr)
 {
-	
-	HPEN	pen = CreatePen(PS_SOLID, 10, 0X000000);
-	HPEN	penW = CreatePen(PS_SOLID, 10, 0xFFFFFF);
-	
-
 	if (direction == 1) {
 
 		SelectObject(hdc, pen);
 		Rectangle(
 			hdc,
 			230,
-			y-160 - value,
+			yl=y-160 - value,
 			360,
-			y - value
+			yr=y - value
 		);
 		Sleep(100);
 		SelectObject(hdc, penW);
@@ -50,16 +52,15 @@ VOID OnPaint(HDC hdc,bool direction,int y)
 			y - value
 		);
 
-		
 	}
 	else {
 		SelectObject(hdc, pen);
 		Rectangle(
 			hdc,
 			230,
-			y -160+ value,
+			yl=y -160+ value,
 			360,
-			y + value
+			yr=y + value
 		);
 		Sleep(100);
 		SelectObject(hdc, penW);
@@ -74,6 +75,7 @@ VOID OnPaint(HDC hdc,bool direction,int y)
 	}
 	value++;
 }
+
 void Background(HDC hdc) {
 	Graphics graphics(hdc);
 	Pen      pen(Color(255, 0, 0, 0), 10);
@@ -86,14 +88,12 @@ void Background(HDC hdc) {
 }
 
 	int t;
-	int b;
 	int pietro;
 	bool direction=0;
+	int yl;
+	int yr;
 
-	HPEN	pen = CreatePen(PS_SOLID, 10, 0X000000);
-	HPEN	penW=CreatePen(PS_SOLID,10,0xFFFFFF);
-
-
+	
 void repaintWindow(HWND hWnd, HDC& hdc, PAINTSTRUCT& ps,RECT *drawArea)
 {
 	
@@ -103,7 +103,7 @@ void repaintWindow(HWND hWnd, HDC& hdc, PAINTSTRUCT& ps,RECT *drawArea)
 
 	hdc = GetDC(hWnd);
 	
-	OnPaint(hdc,direction,t);
+	OnPaint(hdc,direction,t,yl,yr);
 	ReleaseDC(hWnd, hdc);
 	
 }
@@ -154,8 +154,8 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
 
 	HWND hStaticIcon = CreateWindowEx(0, L"STATIC", NULL, WS_CHILD | WS_VISIBLE |
 		SS_CENTER, 500, 50, 48, 48, hWnd, NULL, hInstance, NULL);
-	SetWindowText(hStaticIcon, L"66");
-
+	SetWindowText(hStaticIcon, L"0");
+		
 	HWND hwndButton1_2 = CreateWindow(
 		L"BUTTON",  // Predefined class; Unicode assumed 
 		L"2",      // Button text 
@@ -198,11 +198,6 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
 	HWND hwndTextButton1 = CreateWindowEx(WS_EX_CLIENTEDGE, TEXT("Edit"), TEXT("0"),
 		WS_CHILD | WS_VISIBLE, 75	, 500, 40,
 		20, hWnd, NULL, NULL, NULL);
-
-	//DWORD dlugosc_1 = GetWindowTextLength(hwndTextButton1);
-	//LPSTR Bufor_1 = (LPSTR)GlobalAlloc(GPTR, dlugosc_1 + 1);
-	//GetWindowText(hwndTextButton1, Bufor_1, dlugosc_1 + 1);
-
 
 	HWND hwndButton2_1 = CreateWindow(
 		L"BUTTON",  // Predefined class; Unicode assumed 
@@ -358,9 +353,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 	case WM_COMMAND:
 	switch(wParam){
 	case ID_PRZYCISK1_2: {
-	
-		
-		SetTimer(hWnd, TMR_1, 25, NULL);
+		if (isTimerrunning)
+			break;
+		isTimerrunning=SetTimer(hWnd, TMR_1, 25, NULL);
 		
 		t = 630;
 		pietro= 150;
@@ -371,9 +366,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 	
 	break;
 	case ID_PRZYCISK1_3: {
+		if (isTimerrunning)
+			break;
 
-
-		SetTimer(hWnd, TMR_1, 25, NULL);
+		isTimerrunning=SetTimer(hWnd, TMR_1, 25, NULL);
 
 		t = 630;
 		pietro = 300;
@@ -384,9 +380,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 
 					   break;
 	case ID_PRZYCISK1_4: {
+		if (isTimerrunning)
+			break;
 
-
-		SetTimer(hWnd, TMR_1, 25, NULL);
+		isTimerrunning=SetTimer(hWnd, TMR_1, 25, NULL);
 
 		t = 630;
 		pietro = 430;
@@ -397,7 +394,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 
 					   break;
 	case ID_PRZYCISK2_1: {
-		SetTimer(hWnd, TMR_1, 25, NULL);
+		if (isTimerrunning)
+			break;
+		isTimerrunning=SetTimer(hWnd, TMR_1, 25, NULL);
 
 		t = 480;
 		pietro = 150;
@@ -408,7 +407,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 
 					   break;
 	case ID_PRZYCISK2_3: {
-		SetTimer(hWnd, TMR_1, 25, NULL);
+		if (isTimerrunning)
+			break;
+		isTimerrunning=SetTimer(hWnd, TMR_1, 25, NULL);
 
 		t = 480;
 		pietro = 150;
@@ -419,7 +420,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 
 					   break;
 	case ID_PRZYCISK2_4: {
-		SetTimer(hWnd, TMR_1, 25, NULL);
+		if (isTimerrunning)
+			break;
+		isTimerrunning=SetTimer(hWnd, TMR_1, 25, NULL);
 
 		t = 480;
 		pietro = 300;
@@ -430,7 +433,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 
 					   break;
 	case ID_PRZYCISK3_1: {
-		SetTimer(hWnd, TMR_1, 25, NULL);
+		if (isTimerrunning)
+			break;
+		isTimerrunning=SetTimer(hWnd, TMR_1, 25, NULL);
 
 		t = 330;
 		pietro = 300;
@@ -441,7 +446,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 
 					   break;
 	case ID_PRZYCISK3_2: {
-		SetTimer(hWnd, TMR_1, 25, NULL);
+		if (isTimerrunning)
+			break;
+		isTimerrunning=SetTimer(hWnd, TMR_1, 25, NULL);
 
 		t = 330;
 		pietro = 150;
@@ -452,7 +459,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 
 					   break;
 	case ID_PRZYCISK3_4: {
-		SetTimer(hWnd, TMR_1, 25, NULL);
+		if (isTimerrunning)
+			break;
+		isTimerrunning=SetTimer(hWnd, TMR_1, 25, NULL);
 
 		t = 330;
 		pietro = 150;
@@ -463,7 +472,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 
 					   break;
 	case ID_PRZYCISK4_1: {
-		SetTimer(hWnd, TMR_1, 25, NULL);
+		if (isTimerrunning)
+			break;
+		isTimerrunning=SetTimer(hWnd, TMR_1, 25, NULL);
 
 		t = 180;
 		pietro = 450;
@@ -474,7 +485,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 
 					   break;
 	case ID_PRZYCISK4_2: {
-		SetTimer(hWnd, TMR_1, 25, NULL);
+		if (isTimerrunning)
+			break;
+		isTimerrunning=SetTimer(hWnd, TMR_1, 25, NULL);
 
 		t = 180;
 		pietro = 300;
@@ -485,7 +498,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 
 					   break;
 	case ID_PRZYCISK4_3: {
-		SetTimer(hWnd, TMR_1, 25, NULL);
+		if (isTimerrunning)
+			break;
+		isTimerrunning=SetTimer(hWnd, TMR_1, 25, NULL);
 
 		t = 180;
 		pietro = 150;
@@ -501,14 +516,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 		{
 		case TMR_1:
 			
-			if (value == pietro) {
+			repaintWindow(hWnd, hdc, ps, &drawArea);
+			if (value >= pietro) {
+				hdc = GetDC(hWnd);
+				SelectObject(hdc, pen);
+				Rectangle(hdc, 230, yl, 360, yr);
+				ReleaseDC(hWnd, hdc);
 				value = 0;
 				KillTimer(hWnd, TMR_1);
+				isTimerrunning = 0;
 
 				break;
 			}
-			
-			repaintWindow(hWnd, hdc, ps, &drawArea);
 			value++;
 			break;
 		}
