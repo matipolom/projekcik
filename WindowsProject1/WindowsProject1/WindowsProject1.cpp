@@ -19,13 +19,7 @@ using namespace Gdiplus;
 #define ID_PRZYCISK4_3 512
 #define TMR_1 1
 
-char zero[4] = "0";
-LPWSTR Bufor1; // Nie jestem w stanie ogarnąć wyświetlania wartości podanej na pole tekstowe, pomożesz? obok kody odpowiedzianego za wyswitlanie masy dodałem komentarze
-LPWSTR Bufor2; //
-LPWSTR Bufor3; //
-LPWSTR Bufor4; //
-LPWSTR text=(LPWSTR)zero;//
-//mbsrtowcs(wtext, text, 4);
+
 bool isTimerrunning=0;
 char kierunek;
 int value=0;
@@ -159,43 +153,8 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
 		hInstance,                // program instance handle
 		NULL);                    // creation parameters
 
-	HWND hwndTextButton1 = CreateWindowEx(WS_EX_CLIENTEDGE, TEXT("Edit"), TEXT("0"),
-		WS_CHILD | WS_VISIBLE, 75, 500, 40,
-		20, hWnd, NULL, NULL, NULL);//
+	
 
-	HWND hwndTextButton2 = CreateWindowEx(WS_EX_CLIENTEDGE, TEXT("Edit"), TEXT("0"),
-		WS_CHILD | WS_VISIBLE, 75, 350, 40,
-		20, hWnd, NULL, NULL, NULL);//
-
-	HWND hwndTextButton3 = CreateWindowEx(WS_EX_CLIENTEDGE, TEXT("Edit"), TEXT("0"),
-		WS_CHILD | WS_VISIBLE, 75, 200, 40,
-		20, hWnd, NULL, NULL, NULL);//
-
-	HWND hwndTextButton4 = CreateWindowEx(WS_EX_CLIENTEDGE, TEXT("Edit"), TEXT("0"),
-		WS_CHILD | WS_VISIBLE, 75, 50, 40,
-		20, hWnd, NULL, NULL, NULL);//
-
-
-	HWND hStaticIcon = CreateWindowEx(0, L"STATIC", NULL, WS_CHILD | WS_VISIBLE |
-		SS_CENTER, 500, 50, 48, 48, hWnd, NULL, hInstance, NULL);//
-	SetWindowText(hStaticIcon, text);//
-
-	DWORD Length1 = GetWindowTextLength(hwndTextButton1);//
-	LPWSTR Bufor1 = (LPWSTR)GlobalAlloc(GPTR, Length1+ 1);//
-	GetWindowText(hwndTextButton1, Bufor1, Length1+ 1);//
-
-	DWORD Length2 = GetWindowTextLength(hwndTextButton2);//
-	LPWSTR Bufor2 = (LPWSTR)GlobalAlloc(GPTR, Length2+ 1);//
-	GetWindowText(hwndTextButton2, Bufor2, Length2+ 1);//
-
-	DWORD Length3 = GetWindowTextLength(hwndTextButton3);//
-	LPWSTR Bufor3 = (LPWSTR)GlobalAlloc(GPTR, Length3 + 1);//
-	GetWindowText(hwndTextButton3, Bufor3, Length3 + 1);//
-
-	DWORD Length4 = GetWindowTextLength(hwndTextButton4);//
-	LPWSTR Bufor4 = (LPWSTR)GlobalAlloc(GPTR, Length4+ 1);//
-	GetWindowText(hwndTextButton4, Bufor4, Length4 + 1);//
-		
 	HWND hwndButton1_2 = CreateWindow(
 		L"BUTTON",  // Predefined class; Unicode assumed 
 		L"2",      // Button text 
@@ -372,10 +331,33 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 {
 	HDC          hdc;
 	PAINTSTRUCT  ps;
-	
-
+	static HWND hwndTextButton1;
+	static HWND hwndTextButton2;
+	static HWND hwndTextButton3;
+	static HWND hwndTextButton4;
+	static HWND hwndTextOut;
+	TCHAR val[4] = { 0 };
 	switch (message)
 	{
+	case WM_CREATE:
+		hwndTextOut = CreateWindowEx(0, L"Static", TEXT("0"),WS_CHILD | WS_VISIBLE | SS_CENTER, 500, 50, 20, 20, hWnd, NULL, NULL, NULL);
+		hwndTextButton1 = CreateWindowEx(WS_EX_CLIENTEDGE, TEXT("Edit"), TEXT("0"),
+			WS_CHILD | WS_VISIBLE, 75, 500, 40,
+			20, hWnd, NULL, NULL, NULL);
+
+		hwndTextButton2 = CreateWindowEx(WS_EX_CLIENTEDGE, TEXT("Edit"), TEXT("0"),
+			WS_CHILD | WS_VISIBLE, 75, 350, 40,
+			20, hWnd, NULL, NULL, NULL);
+
+		hwndTextButton3 = CreateWindowEx(WS_EX_CLIENTEDGE, TEXT("Edit"), TEXT("0"),
+			WS_CHILD | WS_VISIBLE, 75, 200, 40,
+			20, hWnd, NULL, NULL, NULL);
+
+		hwndTextButton4 = CreateWindowEx(WS_EX_CLIENTEDGE, TEXT("Edit"), TEXT("0"),
+			WS_CHILD | WS_VISIBLE, 75, 50, 40,
+			20, hWnd, NULL, NULL, NULL);
+		
+		break;
 	case WM_COMMAND:
 	switch(wParam){
 	case ID_PRZYCISK1_2: {
@@ -386,7 +368,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 		t = 630;
 		pietro= 150;
 		direction = 1;
-	
+		GetWindowText(hwndTextButton1, val, 4);
+		SetWindowText(hwndTextOut,val) ;
 		}
 		
 	
@@ -400,7 +383,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 		t = 630;
 		pietro = 300;
 		direction = 1;
-
+		GetWindowText(hwndTextButton1, val, 4);
+		SetWindowText(hwndTextOut, val);
 	}
 
 
@@ -414,7 +398,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 		t = 630;
 		pietro = 430;
 		direction = 1;
-
+		GetWindowText(hwndTextButton1, val, 4);
+		SetWindowText(hwndTextOut, val);
 	}
 
 
@@ -427,7 +412,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 		t = 480;
 		pietro = 150;
 		direction = 0;
-
+		GetWindowText(hwndTextButton2, val, 4);
+		SetWindowText(hwndTextOut, val);
 	}
 
 
@@ -440,7 +426,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 		t = 480;
 		pietro = 150;
 		direction = 1;
-
+		GetWindowText(hwndTextButton2, val, 4);
+		SetWindowText(hwndTextOut, val);
 	}
 
 
@@ -453,7 +440,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 		t = 480;
 		pietro = 300;
 		direction = 1;
-
+		GetWindowText(hwndTextButton2, val, 4);
+		SetWindowText(hwndTextOut, val);
 	}
 
 
@@ -466,7 +454,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 		t = 330;
 		pietro = 300;
 		direction = 0;
-
+		GetWindowText(hwndTextButton3, val, 4);
+		SetWindowText(hwndTextOut, val);
 	}
 
 
@@ -479,7 +468,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 		t = 330;
 		pietro = 150;
 		direction = 0;
-
+		GetWindowText(hwndTextButton3, val, 4);
+		SetWindowText(hwndTextOut, val);
 	}
 
 
@@ -492,7 +482,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 		t = 330;
 		pietro = 150;
 		direction = 1;
-
+		GetWindowText(hwndTextButton3, val, 4);
+		SetWindowText(hwndTextOut, val);
 	}
 
 
@@ -505,7 +496,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 		t = 180;
 		pietro = 450;
 		direction = 0;
-
+		GetWindowText(hwndTextButton4, val, 4);
+		SetWindowText(hwndTextOut, val);
 	}
 
 
@@ -518,7 +510,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 		t = 180;
 		pietro = 300;
 		direction = 0;
-
+		GetWindowText(hwndTextButton4, val, 4);
+		SetWindowText(hwndTextOut, val);
 	}
 
 
@@ -531,7 +524,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 		t = 180;
 		pietro = 150;
 		direction = 0;
-
+		GetWindowText(hwndTextButton4, val, 4);
+		SetWindowText(hwndTextOut, val);
 	}
 
 
@@ -551,7 +545,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 				value = 0;
 				KillTimer(hWnd, TMR_1);
 				isTimerrunning = 0;
-
+				SetWindowText(hwndTextOut, TEXT("0"));
 				break;
 			}
 			value++;
